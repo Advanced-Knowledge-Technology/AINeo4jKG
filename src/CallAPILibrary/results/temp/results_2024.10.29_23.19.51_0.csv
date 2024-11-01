@@ -1,0 +1,149 @@
+data,response,prompt_tokens,candidates_tokens
+"{'contents': [{'parts': [{'text': 'Đoạn văn: ""Viêm dạ dày là nguyên nhân dẫn đến các tình trạng đau, nóng vùng thượng vị, ợ hơi ợ chua nhiều và xuất huyết dạ dày trong trường hợp nặng. Viêm dạ dày cấp về cơ bản là một bệnh có thể điều trị dứt điểm bằng phương pháp nội khoa đơn giản. Tuy nhiên, bệnh viêm dạ dày mạn tính khó để khỏi bệnh hoàn toàn.\n\nViêm dạ dày hay còn được biết là viêm niêm mạc dạ dày là một bệnh lý điển hình thuộc sức khỏe tiêu hóa. Bệnh là tình trạng bề mặt niêm mạc bị tổn thương, bào mòn do vi khuẩn hoặc những tác nhân khác. Viêm dạ dày đặc trưng là sự thấm nhập các tế bào viêm, chính vì vậy bác sĩ cần kết quả xét nghiệm mô bệnh học dạ dày để có thể chẩn đoán và kết luận bệnh. Niêm mạc dạ dày là một lớp mỏng có chức năng bảo vệ thành dạ dày khỏi những tác động kích thích từ acid hoặc tấn công của vi khuẩn. Theo cơ chế bệnh sinh của viêm dạ dày, khi niêm mạc dạ dày bị vi khuẩn từ bên ngoài tấn công sẽ khiến phần niêm mạc dạ dày bị tổn thương, khả năng cao phát triển thành viêm loét dạ dày. Ngoài ra, niêm mạc cũng có thể bị tổn thương bởi sự bài tiết acid bất thường bên trong cơ thể. Điều này là hệ lụy của một thói quen ăn uống không điều độ và chế độ dinh dưỡng không lành mạnh kéo dài.(1) Bệnh có hai loại viêm dạ dày cấp tính và viêm dạ dày mạn tính thường đi kèm với các triệu chứng lâm sàng về đường ruột, hệ tiêu hóa và dạ dày bất thường.\nViêm dạ dày cấp là tình trạng trạng dạ dày bị viêm cấp tính do nhiều nguyên nhân: thuốc, rượu, ….Người bệnh thường sẽ nhận biết được viêm dạ dày cấp tính ngay khi các triệu chứng phát ra. Những triệu chứng chủ yếu là cơn đau thượng vị, gây ra những bất tiện khó chịu trong hoạt động ăn uống. Đây là các triệu chứng lâm sàng điển hình của bệnh và cũng sẽ tự khỏi sau một thời gian ngắn, dao động từ 5 - 7 ngày. Người bệnh viêm dạ dày cấp tính có thể không cần điều trị, chỉ cần thay đổi chế độ dinh dưỡng để giảm thiểu và hỗ trợ dạ dày phục hồi tổn thương.\nViêm dạ dày mạn xảy ra phần lớn là do vi khuẩn HP. Bệnh diễn biến từ khi nào không rõ, bệnh thường không có triệu chứng, chủ yếu là phát hiện được do khi nội soi dạ dày. Viêm dạ dày mạn có thể tiến triển thành viêm teo, dị sản ruột, và tiến triển thành các tổn thương tiền ung thư dạ dày cũng như tăng nguy cơ ung thư dạ dày cho người bệnh.\n\nViêm dạ dày cấp có thể xảy ra ở bất cứ đối tượng và lứa tuổi nào. Tuy nhiên, đây không phải là một bệnh phổ biến, dễ mắc phải. Bạn hoàn toàn có thể phòng ngừa viêm dạ dày cấp bằng cách thực hiện chế độ dinh dưỡng khoa học, lối sống lành mạnh.(2) Mặt khác, viêm dạ dày cũng có thể dễ xuất hiện với một số đối tượng nhất định. Những đối tượng này gồm những người sống tại những môi trường không đảm bảo vệ sinh, từ đó tăng khả năng bị nhiễm vi khuẩn H.pylori, một loại vi khuẩn gây viêm dạ dày. Bên cạnh đó, người lớn tuổi cũng được xét là đối tượng có nguy cơ mắc viêm dạ dày cao hơn những người trẻ vì có thời gian bị nhiễm HP lâu dài . Hơn nữa, người lớn tuổi cũng là nhóm người sử dụng nhiều loại thuốc giảm đau chống viêm (NSAIDS). Đây cũng là lý do để niêm mạc ở người lớn tuổi gặp nhiều rủi ro bị tổn thương do sử dụng thuốc NSAID trong thời gian dài.""\n\nBạn là một thuật toán hàng đầu được thiết kế để trích xuất thông tin theo định dạng cấu trúc nhằm xây dựng đồ thị tri thức.\nNhiệm vụ của bạn là xác định các thực thể và mối quan hệ được yêu cầu từ đoạn văn bản đã cho theo hướng dẫn của người dùng.\nBạn phải tạo ra đầu ra dưới dạng JSON chứa danh sách các đối tượng JSON có các khóa sau: ""text"", ""head"", ""head_type"", ""relation"", ""tail"", và ""tail_type"".\nKhóa ""text"" phải chứa câu văn bản dài của thực thể được trích xuất, có thể có nhiều câu văn bản và một câu có thể dùng cho nhiều đối tượng JSON khác nhau.\nKhóa ""head"" phải chứa văn bản của thực thể chính với một trong các loại từ danh sách mà người dùng đã cung cấp.\nKhóa ""head_type"" phải chứa loại của thực thể chính, với loại này phải thuộc một trong các loại từ [\'symptom\', \'cause\', \'disease\', \'organ\', \'treatment\', \'lifestyle\', \'test\', \'food\'].\nKhóa ""relation"" phải chứa loại quan hệ giữa ""head"" và ""tail"", với loại quan hệ phải thuộc một trong các loại từ [\'isSymptomOf\', \'causedBy\', \'affects\', \'treatedBy\', \'locatedIn\', \'aggravatedBy\', \'associatedWith\', \'preventedBy\', \'diagnosedBy\', \'relatedTo\'].\nKhóa ""tail"" phải đại diện cho văn bản của một thực thể được trích xuất và là đối tượng của mối quan hệ, còn khóa ""tail_type"" phải chứa loại của thực thể đối tượng từ [\'symptom\', \'cause\', \'disease\', \'organ\', \'treatment\', \'lifestyle\', \'test\', \'food\'].\nCả 6 khoá trên đều ép buộc.\n\nGiải thích và ví dụ của mỗi loại thực thể:\n- Symptom: Dấu hiệu hoặc biểu hiện của một bệnh lý hoặc vấn đề sức khỏe. Ví dụ: Đi tiểu nhiều là symptom của bệnh bàng quang tăng hoạt.\n- Cause: Yếu tố hoặc sự kiện gây ra triệu chứng hoặc bệnh lý. Ví dụ: Mức axit dạ dày cao có thể cause chứng khó tiêu.\n- Disease: Một tình trạng hoặc bệnh. Ví dụ: Tiểu đường là một disease mãn tính ảnh hưởng đến mức đường huyết.\n- Organ: Một phần của cơ thể có chức năng cụ thể. Ví dụ: Bàng quang là organ tham gia vào việc chứa nước tiểu.\n- Treatment: Một phương pháp hoặc thủ tục được sử dụng để chữa hoặc quản lý bệnh lý hoặc tình trạng. Ví dụ: Vật lý trị liệu là treatment để cải thiện sức mạnh cơ bắp.\n- Lifestyle: Thói quen hoặc hành vi có thể ảnh hưởng đến sức khỏe. Ví dụ: Hút thuốc là lifestyle làm tăng nguy cơ bệnh phổi.\n- Test: Một thủ tục hoặc phân tích y khoa được sử dụng để chẩn đoán một tình trạng. Ví dụ: Xét nghiệm máu thường được sử dụng để test chẩn đoán nhiễm trùng.\n- Food: Các chất được tiêu thụ để cung cấp dinh dưỡng, có thể ảnh hưởng đến sức khỏe. Ví dụ: Thức ăn cay có thể aggravate khó chịu dạ dày.\n\nGiải thích và ví dụ của mỗi loại quan hệ:\n- isSymptomOf: Quan hệ cho thấy một triệu chứng liên quan đến một bệnh lý cụ thể. Ví dụ: Đi tiểu nhiều isSymptomOf bệnh bàng quang tăng hoạt.\n- causedBy: Quan hệ cho thấy nguyên nhân của một triệu chứng hoặc tình trạng. Ví dụ: Chứng khó tiêu thường causedBy trào ngược axit.\n- affects: Quan hệ cho thấy một yếu tố ảnh hưởng đến một cơ quan hoặc bộ phận của cơ thể. Ví dụ: Bàng quang tăng hoạt affects hệ thống tiết niệu.\n- treatedBy: Quan hệ cho thấy một bệnh lý hoặc triệu chứng được quản lý hoặc giảm nhẹ bằng phương pháp điều trị. Ví dụ: Bàng quang tăng hoạt có thể treatedBy thuốc.\n- locatedIn: Quan hệ cho thấy vị trí của một cơ quan hoặc tình trạng trong cơ thể. Ví dụ: Thận locatedIn vùng bụng trên.\n- aggravatedBy: Quan hệ cho thấy một tình trạng trở nên tồi tệ hơn do yếu tố cụ thể. Ví dụ: Chứng khó tiêu có thể aggravatedBy ăn thức ăn cay.\n- associatedWith: Quan hệ cho thấy một yếu tố hoặc tình trạng liên kết với một yếu tố khác. Ví dụ: Béo phì associatedWith tiểu đường.\n- preventedBy: Quan hệ cho thấy một bệnh lý hoặc triệu chứng có thể tránh được bằng các hành động hoặc phương pháp cụ thể. Ví dụ: Bệnh tim có thể preventedBy tập thể dục thường xuyên.\n- diagnosedBy: Quan hệ cho thấy một xét nghiệm hoặc phương pháp được sử dụng để xác định một tình trạng. Ví dụ: Nhiễm trùng thận có thể diagnosedBy xét nghiệm nước tiểu.\n- relatedTo: Quan hệ rộng, cho thấy sự kết nối giữa hai yếu tố sức khỏe, điều kiện hoặc triệu chứng. Ví dụ: Tăng huyết áp relatedTo bệnh tim.\n\nHãy cố gắng trích xuất càng nhiều thực thể và quan hệ càng tốt.\nLƯU Ý QUAN TRỌNG:\n- Không thêm bất kỳ giải thích hoặc văn bản nào.\nKiến trúc giá trị trả về mong đợi:\n[{\'text\': \'Cảm giác tê buốt bàn chân là triệu chứng của biến chứng bàn chân đái tháo đường.\', \'head\': \'Cảm giác tê buốt bàn chân\', \'head_type\': \'symptom\', \'relation\': \'isSymptomOf\', \'tail\': \'Biến chứng bàn chân đái tháo đường\', \'tail_type\': \'disease\'}, {\'text\': \'Xơ vữa mạch máu là một trong những nguyên nhân chính gây ra biến chứng bàn chân đái tháo đường.\', \'head\': \'Xơ vữa mạch máu\', \'head_type\': \'cause\', \'relation\': \'causes\', \'tail\': \'Biến chứng bàn chân đái tháo đường\', \'tail_type\': \'disease\'}, {\'text\': \'Loét bàn chân đái tháo đường là biến chứng phức tạp của bệnh đái tháo đường.\', \'head\': \'Loét bàn chân đái tháo đường\', \'head_type\': \'disease\', \'relation\': \'isSymptomOf\', \'tail\': \'Bệnh đái tháo đường\', \'tail_type\': \'disease\'}, {\'text\': \'Bệnh nhân đái tháo đường có thể kiểm soát được biến chứng bàn chân thông qua các biện pháp chăm sóc bàn chân.\', \'head\': \'Biến chứng bàn chân\', \'head_type\': \'disease\', \'relation\': \'treatedBy\', \'tail\': \'Chăm sóc bàn chân\', \'tail_type\': \'treatment\'}, {\'text\': \'Bệnh đái tháo đường gây tổn thương hệ mạch máu và thần kinh, làm tăng nguy cơ loét bàn chân.\', \'head\': \'Bệnh đái tháo đường\', \'head_type\': \'disease\', \'relation\': \'affects\', \'tail\': \'Hệ mạch máu và thần kinh\', \'tail_type\': \'organ\'}]'}]}], 'safetySettings': [{'category': 'HARM_CATEGORY_HARASSMENT', 'threshold': 'BLOCK_NONE'}, {'category': 'HARM_CATEGORY_HATE_SPEECH', 'threshold': 'BLOCK_NONE'}, {'category': 'HARM_CATEGORY_SEXUALLY_EXPLICIT', 'threshold': 'BLOCK_NONE'}, {'category': 'HARM_CATEGORY_DANGEROUS_CONTENT', 'threshold': 'BLOCK_NONE'}], 'generationConfig': {'temperature': 0.3, 'top_p': 0.5, 'top_k': 1}}","```json
+[
+  {
+    ""text"": ""Viêm dạ dày là nguyên nhân dẫn đến các tình trạng đau, nóng vùng thượng vị, ợ hơi ợ chua nhiều và xuất huyết dạ dày trong trường hợp nặng."",
+    ""head"": ""Viêm dạ dày"",
+    ""head_type"": ""disease"",
+    ""relation"": ""isSymptomOf"",
+    ""tail"": ""đau"",
+    ""tail_type"": ""symptom""
+  },
+  {
+    ""text"": ""Viêm dạ dày là nguyên nhân dẫn đến các tình trạng đau, nóng vùng thượng vị, ợ hơi ợ chua nhiều và xuất huyết dạ dày trong trường hợp nặng."",
+    ""head"": ""Viêm dạ dày"",
+    ""head_type"": ""disease"",
+    ""relation"": ""isSymptomOf"",
+    ""tail"": ""nóng vùng thượng vị"",
+    ""tail_type"": ""symptom""
+  },
+  {
+    ""text"": ""Viêm dạ dày là nguyên nhân dẫn đến các tình trạng đau, nóng vùng thượng vị, ợ hơi ợ chua nhiều và xuất huyết dạ dày trong trường hợp nặng."",
+    ""head"": ""Viêm dạ dày"",
+    ""head_type"": ""disease"",
+    ""relation"": ""isSymptomOf"",
+    ""tail"": ""ợ hơi ợ chua nhiều"",
+    ""tail_type"": ""symptom""
+  },
+  {
+    ""text"": ""Viêm dạ dày là nguyên nhân dẫn đến các tình trạng đau, nóng vùng thượng vị, ợ hơi ợ chua nhiều và xuất huyết dạ dày trong trường hợp nặng."",
+    ""head"": ""Viêm dạ dày"",
+    ""head_type"": ""disease"",
+    ""relation"": ""isSymptomOf"",
+    ""tail"": ""xuất huyết dạ dày"",
+    ""tail_type"": ""symptom""
+  },
+  {
+    ""text"": ""Viêm dạ dày cấp về cơ bản là một bệnh có thể điều trị dứt điểm bằng phương pháp nội khoa đơn giản."",
+    ""head"": ""Viêm dạ dày cấp"",
+    ""head_type"": ""disease"",
+    ""relation"": ""treatedBy"",
+    ""tail"": ""phương pháp nội khoa đơn giản"",
+    ""tail_type"": ""treatment""
+  },
+  {
+    ""text"": ""Bệnh là tình trạng bề mặt niêm mạc bị tổn thương, bào mòn do vi khuẩn hoặc những tác nhân khác."",
+    ""head"": ""Viêm dạ dày"",
+    ""head_type"": ""disease"",
+    ""relation"": ""causedBy"",
+    ""tail"": ""vi khuẩn"",
+    ""tail_type"": ""cause""
+  },
+  {
+    ""text"": ""Viêm dạ dày đặc trưng là sự thấm nhập các tế bào viêm, chính vì vậy bác sĩ cần kết quả xét nghiệm mô bệnh học dạ dày để có thể chẩn đoán và kết luận bệnh."",
+    ""head"": ""Viêm dạ dày"",
+    ""head_type"": ""disease"",
+    ""relation"": ""diagnosedBy"",
+    ""tail"": ""xét nghiệm mô bệnh học dạ dày"",
+    ""tail_type"": ""test""
+  },
+  {
+    ""text"": ""Theo cơ chế bệnh sinh của viêm dạ dày, khi niêm mạc dạ dày bị vi khuẩn từ bên ngoài tấn công sẽ khiến phần niêm mạc dạ dày bị tổn thương, khả năng cao phát triển thành viêm loét dạ dày."",
+    ""head"": ""Viêm dạ dày"",
+    ""head_type"": ""disease"",
+    ""relation"": ""causedBy"",
+    ""tail"": ""vi khuẩn"",
+    ""tail_type"": ""cause""
+  },
+  {
+    ""text"": ""Ngoài ra, niêm mạc cũng có thể bị tổn thương bởi sự bài tiết acid bất thường bên trong cơ thể. Điều này là hệ lụy của một thói quen ăn uống không điều độ và chế độ dinh dưỡng không lành mạnh kéo dài.(1) Bệnh có hai loại viêm dạ dày cấp tính và viêm dạ dày mạn tính thường đi kèm với các triệu chứng lâm sàng về đường ruột, hệ tiêu hóa và dạ dày bất thường."",
+    ""head"": ""Viêm dạ dày"",
+    ""head_type"": ""disease"",
+    ""relation"": ""causedBy"",
+    ""tail"": ""thói quen ăn uống không điều độ"",
+    ""tail_type"": ""lifestyle""
+  },
+  {
+    ""text"": ""Ngoài ra, niêm mạc cũng có thể bị tổn thương bởi sự bài tiết acid bất thường bên trong cơ thể. Điều này là hệ lụy của một thói quen ăn uống không điều độ và chế độ dinh dưỡng không lành mạnh kéo dài.(1) Bệnh có hai loại viêm dạ dày cấp tính và viêm dạ dày mạn tính thường đi kèm với các triệu chứng lâm sàng về đường ruột, hệ tiêu hóa và dạ dày bất thường."",
+    ""head"": ""Viêm dạ dày"",
+    ""head_type"": ""disease"",
+    ""relation"": ""causedBy"",
+    ""tail"": ""chế độ dinh dưỡng không lành mạnh"",
+    ""tail_type"": ""lifestyle""
+  },
+  {
+    ""text"": ""Viêm dạ dày cấp là tình trạng trạng dạ dày bị viêm cấp tính do nhiều nguyên nhân: thuốc, rượu, ….Người bệnh thường sẽ nhận biết được viêm dạ dày cấp tính ngay khi các triệu chứng phát ra. Những triệu chứng chủ yếu là cơn đau thượng vị, gây ra những bất tiện khó chịu trong hoạt động ăn uống."",
+    ""head"": ""Viêm dạ dày cấp"",
+    ""head_type"": ""disease"",
+    ""relation"": ""causedBy"",
+    ""tail"": ""thuốc"",
+    ""tail_type"": ""cause""
+  },
+  {
+    ""text"": ""Viêm dạ dày cấp là tình trạng trạng dạ dày bị viêm cấp tính do nhiều nguyên nhân: thuốc, rượu, ….Người bệnh thường sẽ nhận biết được viêm dạ dày cấp tính ngay khi các triệu chứng phát ra. Những triệu chứng chủ yếu là cơn đau thượng vị, gây ra những bất tiện khó chịu trong hoạt động ăn uống."",
+    ""head"": ""Viêm dạ dày cấp"",
+    ""head_type"": ""disease"",
+    ""relation"": ""causedBy"",
+    ""tail"": ""rượu"",
+    ""tail_type"": ""cause""
+  },
+  {
+    ""text"": ""Viêm dạ dày mạn xảy ra phần lớn là do vi khuẩn HP."",
+    ""head"": ""Viêm dạ dày mạn"",
+    ""head_type"": ""disease"",
+    ""relation"": ""causedBy"",
+    ""tail"": ""vi khuẩn HP"",
+    ""tail_type"": ""cause""
+  },
+  {
+    ""text"": ""Viêm dạ dày mạn có thể tiến triển thành viêm teo, dị sản ruột, và tiến triển thành các tổn thương tiền ung thư dạ dày cũng như tăng nguy cơ ung thư dạ dày cho người bệnh."",
+    ""head"": ""Viêm dạ dày mạn"",
+    ""head_type"": ""disease"",
+    ""relation"": ""relatedTo"",
+    ""tail"": ""ung thư dạ dày"",
+    ""tail_type"": ""disease""
+  },
+  {
+    ""text"": ""Bạn hoàn toàn có thể phòng ngừa viêm dạ dày cấp bằng cách thực hiện chế độ dinh dưỡng khoa học, lối sống lành mạnh.(2) Mặt khác, viêm dạ dày cũng có thể dễ xuất hiện với một số đối tượng nhất định. Những đối tượng này gồm những người sống tại những môi trường không đảm bảo vệ sinh, từ đó tăng khả năng bị nhiễm vi khuẩn H.pylori, một loại vi khuẩn gây viêm dạ dày."",
+    ""head"": ""Viêm dạ dày cấp"",
+    ""head_type"": ""disease"",
+    ""relation"": ""preventedBy"",
+    ""tail"": ""chế độ dinh dưỡng khoa học"",
+    ""tail_type"": ""lifestyle""
+  },
+  {
+    ""text"": ""Bạn hoàn toàn có thể phòng ngừa viêm dạ dày cấp bằng cách thực hiện chế độ dinh dưỡng khoa học, lối sống lành mạnh.(2) Mặt khác, viêm dạ dày cũng có thể dễ xuất hiện với một số đối tượng nhất định. Những đối tượng này gồm những người sống tại những môi trường không đảm bảo vệ sinh, từ đó tăng khả năng bị nhiễm vi khuẩn H.pylori, một loại vi khuẩn gây viêm dạ dày."",
+    ""head"": ""Viêm dạ dày cấp"",
+    ""head_type"": ""disease"",
+    ""relation"": ""preventedBy"",
+    ""tail"": ""lối sống lành mạnh"",
+    ""tail_type"": ""lifestyle""
+  },
+    {
+    ""text"": ""Những đối tượng này gồm những người sống tại những môi trường không đảm bảo vệ sinh, từ đó tăng khả năng bị nhiễm vi khuẩn H.pylori, một loại vi khuẩn gây viêm dạ dày."",
+    ""head"": ""Viêm dạ dày"",
+    ""head_type"": ""disease"",
+    ""relation"": ""causedBy"",
+    ""tail"": ""vi khuẩn H.pylori"",
+    ""tail_type"": ""cause""
+  },
+  {
+    ""text"": ""Bên cạnh đó, người lớn tuổi cũng được xét là đối tượng có nguy cơ mắc viêm dạ dày cao hơn những người trẻ vì có thời gian bị nhiễm HP lâu dài . Hơn nữa, người lớn tuổi cũng là nhóm người sử dụng nhiều loại thuốc giảm đau chống viêm (NSAIDS). Đây cũng là lý do để niêm mạc ở người lớn tuổi gặp nhiều rủi ro bị tổn thương do sử dụng thuốc NSAID trong thời gian dài."",
+    ""head"": ""Viêm dạ dày"",
+    ""head_type"": ""disease"",
+    ""relation"": ""aggravatedBy"",
+    ""tail"": ""thuốc giảm đau chống viêm (NSAIDS)"",
+    ""tail_type"": ""treatment""
+  }
+]
+```",2341,2183
