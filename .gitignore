@@ -6,3 +6,5 @@ venv/
 *.log
 src/corpus/
 src/corpus_clean/
+src/structure_data/
+src/cypher_query/
