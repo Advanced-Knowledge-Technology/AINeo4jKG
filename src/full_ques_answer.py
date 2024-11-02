@@ -7,41 +7,30 @@ from neo4j import GraphDatabase
 from underthesea import text_normalize, sent_tokenize, pos_tag
 
 def split_by_first_verb(query):
-    # Bước 1: Chuẩn hóa văn bản
     normalized_text = text_normalize(query)
-    
-    # Bước 2: Tách thành các câu
     sentences = sent_tokenize(normalized_text)
-    
     results = []
-
-    # Bước 3: Lặp qua từng câu để phân tích
     for sentence in sentences:
-        # Gán nhãn từ loại cho câu
         pos_tags = pos_tag(sentence)
-
-        # Tìm động từ đầu tiên và tách câu
         first_verb_index = -1
         for index, (word, pos) in enumerate(pos_tags):
-            if pos == 'V':  # Nếu tìm thấy động từ
+            if pos == 'V':
+                if index == 0:
+                    continue
                 first_verb_index = index
                 break
-
-        if first_verb_index != -1:  # Nếu có động từ
-            part1 = ' '.join(word for word, _ in pos_tags[:first_verb_index])  # Phần trước động từ
-            part2 = ' '.join(word for word, _ in pos_tags[first_verb_index:])  # Phần từ động từ đến hết câu
-            results.append([part1.strip(), part2.strip()])  # Thêm vào kết quả
+        if first_verb_index != -1:
+            part1 = ' '.join(word for word, _ in pos_tags[:first_verb_index]) 
+            part2 = ' '.join(word for word, _ in pos_tags[first_verb_index:])
+            results.append([part1.strip(), part2.strip()])
         else:
-            results.append([sentence.strip()])  # Nếu không có động từ, thêm nguyên câu
-
+            results.append([sentence.strip()])
     return results
 
-# Thông tin kết nối Neo4j
 uri = "neo4j+s://ffdfad2c.databases.neo4j.io"                   # Địa chỉ database
 username = "neo4j"                                              # Username
 password = "niQisz0U5weBUMit5DuSDTxMXmDsU91qykqIEOJTA4o"        # Password
 
-# Tạo driver kết nối
 driver = GraphDatabase.driver(uri, auth=(username, password))
 
 def find_node_by_text(tx, text):
@@ -52,7 +41,6 @@ def find_node_by_text(tx, text):
     """
     result = tx.run(query, text=text)
     data = result.data()
-    # print("result:", result.data())
     if len(data) > 0:
         return data
     query = """
@@ -61,41 +49,40 @@ def find_node_by_text(tx, text):
     RETURN n
     """
     result = tx.run(query, text=text)
-    return result.data()  # Trả về kết quả đầu tiên hoặc None nếu không có kết quả
+    return result.data()
 
 def query_subgraph(tx, objs, relations):
-    # Trích xuất id từ objs
     ids = [obj['n']['id'] for obj in objs]
-    
-    # Tạo query động để match các relations
-    query = """
-    MATCH (n)-[r]-(related)
-    WHERE n.id IN $ids AND type(r) IN $relations
-    RETURN n.id AS node_id, r.text AS relationship_text, related.id AS related_id
-    """
-    result = tx.run(query, ids=ids, relations=relations)
-    return [(record["node_id"], record["relationship_text"], record["related_id"]) for record in result]
 
-# Hàm tìm top-k văn bản liên quan nhất đến câu query
+    # Nếu `relations` không rỗng, thêm điều kiện cho mối quan hệ
+    if relations:
+        query = """
+        MATCH (n)-[r]-(related)
+        WHERE n.id IN $ids AND type(r) IN $relations
+        RETURN n.id AS node_id, r.text AS relationship_text, related.id AS related_id
+        """
+        result = tx.run(query, ids=ids, relations=relations)
+    else:
+        # Nếu `relations` rỗng, lấy tất cả các mối quan hệ 1 hop liên quan đến `objs`
+        query = """
+        MATCH (n)-[r]-(related)
+        WHERE n.id IN $ids
+        RETURN n.id AS node_id, r.text AS relationship_text, related.id AS related_id
+        """
+        result = tx.run(query, ids=ids)
+    data = [(record["node_id"], record["relationship_text"], record["related_id"]) for record in result]
+    print("data:", data)
+    return data
+
 def bm25_search(full_text, query, top_k=5):
-    # Bước 1: Tokenize các đoạn văn
     documents = [bm25_tokenizer(text) for text in full_text]
-
-    # Bước 2: Khởi tạo mô hình BM25 với các tài liệu đã tokenize
     bm25 = BM25Plus(documents, k1=0.4, b=0.6)
-
-    # Bước 3: Tokenize câu query
     tokenized_query = bm25_tokenizer(query)
-
-    # Bước 4: Tính điểm BM25 cho câu query với tất cả các đoạn văn
     scores = bm25.get_scores(tokenized_query)
-
-    # Bước 5: Sắp xếp các đoạn văn theo điểm BM25 giảm dần và lấy top-k kết quả
     top_k_indices = sorted(range(len(scores)), key=lambda i: scores[i], reverse=True)[
         :top_k
     ]
     top_k_results = [(full_text[i], scores[i]) for i in top_k_indices]
-
     return top_k_results
 
 # API
@@ -132,7 +119,6 @@ GOOGLE_API_KEY = 'AIzaSyCswsFvn0wX5Zi2fbUX0MS43_1RgUSim3Y'
 import random
 random.shuffle(API_KEYS)
 current_api_index = -1
-# genai.configure(api_key=GOOGLE_API_KEY)
 configure_api()
 
 model = genai.GenerativeModel(
@@ -147,35 +133,27 @@ def get_answer(prompt):
             configure_api()
             continue
         break
-    # print(result)
-    # print(result.text)
     return result
 
 if __name__ == "__main__":
-    # Câu truy vấn
-    # query = "Bệnh ung thư gan có triệu chứng và cách điều trị là gì?"
-    query = "Bệnh ung thư gan có triệu chứng là gì?"
-
+    # query = "Bệnh ung thư gan có triệu chứng là gì?"
+    # query = "Suy tim trái là gì?"
+    # query = "Mất trí nhớ là triệu chứng của bệnh gì?"
+    query = "Bệnh bạch hàu là gì?"
     input_data = split_by_first_verb(query)
-
-    # print("Câu truy vấn:", query)
-    # print("Các phần tách biệt theo động từ đầu tiên:", input_data)
-
-    # Dữ liệu đầu vào
-    # input_data = [['Bệnh ung thư gan', 'có triệu chứng và cách điều trị là gì ?']]
-    # Load file output_relationships.json
+    print("input_data", input_data)
     output_relationships_path = "./output_relationships.json"
     with open(output_relationships_path, 'r', encoding='utf-8') as f:
         relationship_pairs = json.load(f)
 
     # Lấy câu đầu tiên trong query
     sentence1 = input_data[0]
-
-    # Mở session và kiểm tra từng text trong câu
     with driver.session() as session:
         objs = []
         relations = []
         for text in sentence1:
+            if text.strip() == "":
+                continue
             text = text.replace(' ', '_').replace(',', '_').replace('\'', '_').lower()
 
             for k, v in relationship_pairs.items(): 
@@ -197,59 +175,44 @@ if __name__ == "__main__":
                 print(f"'{text}' là một node trong đồ thị: {node}")
                 objs.append(node[0])
             elif len(node)>1: 
-                print(f"'{text}' thuộc id của các node trong đồ thị: {node}")
+                print(f"'{text}' thuộc id của các node trong đồ thị: {node[:5]}")
+                print("len(node)", len(node))
                 objs.extend(node)
             else:
                 print(f"'{text}' không phải là một node trong đồ thị.")
 
-        print("objs:", objs)
-        print("relations:", relations)
+    print("objs:", objs)
+    print("relations:", relations)
 
-    # # Đối tượng và mối quan hệ được cung cấp
-    # objs = [{'n': {'id': 'ung_thư_gan_disease'}}]
-    # relations = ['isSymptomOf', 'treatedBy']
-
-    # Mở session và thực hiện truy vấn
     with driver.session() as session:
         subgraph_data = session.execute_read(query_subgraph, objs, relations)
-        
         full_text = []
         set_text = set()
-        # In ra kết quả các node và thuộc tính 'text' của mối quan hệ
         for node, relationship_text, related_node in subgraph_data:
-            # print(f"Node: {node}")
-            # print(f"Relationship: {relationship_text}")
-            # print(f"Related Node: {related_node}\n")
             if relationship_text not in set_text:
                 set_text.add(relationship_text)
                 full_text.append(f"Head: {node}\tTail: {related_node}\tText: {relationship_text}")
-            
-        # for text in full_text:
-        #     print("Text:", text)
 
-        # print(full_text)
-        # ================================================================
-
-    # Đóng kết nối
     driver.close()
+    print("full_text", full_text)
 
-    # Số lượng top-k kết quả muốn lấy
     top_k = 10
-
-    # Tìm top-k đoạn văn liên quan nhất
     top_k_results = bm25_search(full_text, query, top_k)
-
-    # Hiển thị kết quả
     passage = ""
     for idx, (doc, score) in enumerate(top_k_results):
-        # print(f"Top {idx+1}:")
-        # print(f"Đoạn văn: {doc}")
         passage += f"Top {idx+1}:\n" + f"Đoạn văn: {doc}\n"
 
     prompt = f"""Bạn là một thuật toán AI, nhiệm vụ của bạn là trả lời các câu hỏi dựa trên thông tin được cung cấp, không được sử dụng bất kì một thông tin bên ngoài nào.
 
-Hãy trả lời câu hỏi sau sử dụng top 10 đoạn văn liên quan nhất đến câu hỏi: 
+Hãy trả lời câu hỏi sau sử dụng top đoạn văn liên quan nhất đến câu hỏi: 
 query = "{query}"
-{passage}"""
+
+Top đoạn văn liên quan nhất đến câu hỏi:
+{passage}
+
+Yêu cầu: response trả về phải là dạng text để tôi lấy bằng response.text
+"""
+    print("prompt", prompt)  
     answer = get_answer(prompt=prompt)
+    print("answer", answer)
     print("answer:\n", answer.text)
