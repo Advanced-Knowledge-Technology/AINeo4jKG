@@ -1,0 +1,64 @@
+{
+    "isSymptomOf": [
+        "có triệu chứng", 
+        "triệu chứng của", 
+        "biểu hiện của", 
+        "dấu hiệu của", 
+        "triệu chứng"
+    ],
+    "causedBy": [
+        "gây ra bởi", 
+        "do", 
+        "nguyên nhân là", 
+        "được gây ra bởi"
+    ],
+    "affects": [
+        "ảnh hưởng đến", 
+        "tác động đến", 
+        "làm ảnh hưởng", 
+        "làm tổn thương"
+    ],
+    "treatedBy": [
+        "được điều trị bằng", 
+        "điều trị bởi", 
+        "quản lý bởi", 
+        "giảm nhẹ bằng",
+        "cách điều trị"
+    ],
+    "locatedIn": [
+        "nằm ở", 
+        "vị trí tại", 
+        "được tìm thấy ở", 
+        "được xác định ở"
+    ],
+    "aggravatedBy": [
+        "làm trầm trọng hơn bởi", 
+        "làm nặng thêm bởi", 
+        "làm tồi tệ hơn do", 
+        "bị kích thích bởi"
+    ],
+    "associatedWith": [
+        "liên quan đến", 
+        "có liên quan với", 
+        "kết nối với", 
+        "gắn liền với"
+    ],
+    "preventedBy": [
+        "được ngăn chặn bởi", 
+        "phòng tránh bởi", 
+        "tránh được nhờ", 
+        "ngăn ngừa bởi"
+    ],
+    "diagnosedBy": [
+        "chẩn đoán bởi", 
+        "được xác định bằng", 
+        "kiểm tra bằng", 
+        "xác nhận bởi"
+    ],
+    "relatedTo": [
+        "có liên hệ với", 
+        "liên kết với", 
+        "liên quan đến", 
+        "có mối liên hệ với"
+    ]
+}
