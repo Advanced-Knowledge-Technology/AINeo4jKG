@@ -1,80 +1,48 @@
-import pandas as pd
-import json
 import os
+import json
 
-structure_folder_path = r".\structure_data_old"
-full_data_structure = []
-# file_structure_path = r".\structure_data\ung-thu-vom-hong-giai-doan-1.json"
-for file_name in os.listdir(structure_folder_path):
-    file_structure_path = os.path.join(structure_folder_path, file_name)
+# Đường dẫn tới thư mục chứa file .json đầu vào
+input_folder = r"./structure_data"
+# Đường dẫn tới thư mục chứa file .txt đầu ra
+output_folder = r"./cypher_query"
 
-    with open(file_structure_path, 'r', encoding='utf-8') as f:
-        data_structure = json.load(f)
-    
-    full_data_structure.extend(data_structure)
+# Tạo thư mục đầu ra nếu chưa có
+if not os.path.exists(output_folder):
+    os.makedirs(output_folder)
 
-df = pd.DataFrame(full_data_structure)
-
-unique_entities = set()
-for item in full_data_structure:
-    try:
+# Hàm chuyển đổi từ json sang câu lệnh cypher
+def convert_to_cypher(data):
+    cypher_commands = []
+    for index, item in enumerate(data):
+        # Loại bỏ dấu cách và ký tự đặc biệt khỏi head và tail cho id
         if 'head' not in item:
             item['head'] = item['text']
-        unique_entities.add((item['head'].replace(" ","_").replace("-","").replace("'","").lower(), item['head_type']))
-        unique_entities.add((item['tail'].replace(" ","_").replace("-","").replace("'","").lower(), item['tail_type']))
-    except Exception as e:
-        print("Error", e)
-        print("Item", item)
-        continue
-unique_entities_list = list(unique_entities)
-# print(unique_entities_list)
+        head = item['head'].replace(' ', '_').replace(',', '_').replace('\'', '_').lower()
+        tail = item['tail'].replace(' ', '_').replace(',', '_').replace('\'', '_').lower()
+        
+        cypher = f"""\nMERGE (o1:{item['head_type']} {{id: '{head}_{item['head_type']}'}})
+MERGE (o2:{item['tail_type']} {{id: '{tail}_{item['tail_type']}'}})
+MERGE (o1)-[r{index}:{item['relation']}]->(o2)
+SET r{index}.text = '{item['text']}'\n"""
+        cypher_commands.append(cypher)
+    return ''.join(cypher_commands)
 
-import os
+# Lặp qua từng file .json trong thư mục
+for json_filename in os.listdir(input_folder):
+    if json_filename.endswith(".json"):
+        # Đường dẫn file đầu vào và đầu ra
+        input_file_path = os.path.join(input_folder, json_filename)
+        output_file_path = os.path.join(output_folder, json_filename.replace(".json", ".txt"))
 
-# Đảm bảo thư mục tồn tại
-output_dir = r"./cypher_query_old"
-if not os.path.exists(output_dir):
-    os.makedirs(output_dir)
+        # Đọc nội dung file json
+        with open(input_file_path, 'r', encoding='utf-8') as json_file:
+            data = json.load(json_file)
+        
+        # Chuyển đổi nội dung thành cypher
+        cypher_content = convert_to_cypher(data)
+        
+        # Ghi nội dung cypher ra file .txt
+        with open(output_file_path, 'w', encoding='utf-8') as txt_file:
+            txt_file.write(cypher_content)
 
-file_count = 1  # Đếm số file
-line_count = 0  # Đếm số dòng đã ghi trong file hiện tại
-max_lines_per_file = 500  # Số dòng tối đa trong mỗi file
-
-# Tạo tên file đầu tiên
-file_path = os.path.join(output_dir, f"cypher_query_{file_count}.txt")
-file = open(file_path, "a", encoding='utf-8')
-
-for item in unique_entities_list:
-    label, entity = item
-    id = label.replace(" ","_").replace("-","").replace("'","").lower()
-    merge_statement = f"""MERGE (`{id}_{entity}`:{entity} {{id: "{label}"}})\n"""
-    
-    # Kiểm tra xem có cần tạo file mới không
-    if line_count >= max_lines_per_file:
-        file.close()  # Đóng file hiện tại
-        file_count += 1  # Tăng số file
-        file_path = os.path.join(output_dir, f"cypher_query_{file_count}.txt")  # Tạo file mới
-        file = open(file_path, "a", encoding='utf-8')  # Mở file mới
-        line_count = 0  # Reset số dòng trong file mới
-    
-    file.write(merge_statement)
-    line_count += 1  # Tăng số dòng đã ghi
-
-for index, item in enumerate(full_data_structure):
-    head = item['head'].replace(" ","_").replace("-","").replace("'","").lower()
-    tail = item['tail'].replace(" ","_").replace("-","").replace("'","").lower()
-    cypher = f"""MERGE (`{head}_{item['head_type']}`)-[r{index}:{item['relation']}]->(`{tail}_{item['tail_type']}`)\nSET r{index}.text = '{item['text']}'\n"""
-    
-    # Kiểm tra xem có cần tạo file mới không
-    if line_count >= max_lines_per_file:
-        file.close()  # Đóng file hiện tại
-        file_count += 1  # Tăng số file
-        file_path = os.path.join(output_dir, f"cypher_query_{file_count}.txt")  # Tạo file mới
-        file = open(file_path, "a", encoding='utf-8')  # Mở file mới
-        line_count = 0  # Reset số dòng trong file mới
-    
-    file.write(cypher)
-    line_count += 2  # Tăng số dòng đã ghi
-
-# Đóng file cuối cùng
-file.close()
+        print(f"Đã chuyển đổi {json_filename} thành {output_file_path}")
